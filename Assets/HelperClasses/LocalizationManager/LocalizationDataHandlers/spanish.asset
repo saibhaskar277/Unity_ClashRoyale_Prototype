@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c23ee5290a986354c8c5793a6374bfc5, type: 3}
+  m_Name: spanish
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizationDataSO
+  languageName: 1
+  font: {fileID: 11400000, guid: 686fe8586539fd14a969cb6d184b9926, type: 2}
+  entries:
+  - key: 0
+    value: "\u0926\u0947\u0935\u0928\u093E"

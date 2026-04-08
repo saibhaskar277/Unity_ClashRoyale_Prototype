@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 275ec2bb8d5e6544d99a4ef25cc3dba0, type: 3}
+  m_Name: Dragon
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  UnitId: 9
+  AttackType: 2
+  UnitType: 1
+  CardSprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  ElixirCost: 2
+  UnitPrefab: {fileID: 2881861473878963678, guid: 6002f1d5de8fc1a409873955ead6d806, type: 3}
+  PreviewPrefab: {fileID: 2881861473878963678, guid: 05e790f4986697f46b1d5103d142dcc9, type: 3}
+  MaxHealth: 200
+  Damage: 20
+  AttackRange: 3
+  AttackCooldown: 1
+  MoveSpeed: 1
+  DetectionRadius: 5
