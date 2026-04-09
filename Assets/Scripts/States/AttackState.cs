@@ -6,7 +6,7 @@ public class AttackState : UnitState
 
     public override void Enter()
     {
-        controller.Agent.isStopped = true;
+        controller.StopMovement();
     }
 
     public override void Tick()
@@ -18,7 +18,9 @@ public class AttackState : UnitState
             return;
         }
 
-        float dist = Vector3.Distance(controller.transform.position, controller.CurrentTarget.Target.position);
+        controller.FaceTowards(controller.CurrentTarget.Target.position);
+
+        float dist = controller.GetCombatDistance(controller.CurrentTarget.Target.position);
 
         // Target moved away
         if (dist > controller.AttackRange)

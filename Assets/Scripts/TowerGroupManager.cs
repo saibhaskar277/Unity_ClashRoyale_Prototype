@@ -20,16 +20,14 @@ public class TowerGroupManager : MonoBehaviour
         }
     }
 
-    void Update()
+    void OnEnable()
     {
-        if (mainUnlocked || mainTower == null)
-            return;
+        EventManager.AddListner<TowerDestroyedEvent>(OnTowerDestroyed);
+    }
 
-        if (IsAnySideTowerDestroyed())
-        {
-            mainUnlocked = true;
-            mainTower.SetCanAttack(true);
-        }
+    void OnDisable()
+    {
+        EventManager.RemoveListner<TowerDestroyedEvent>(OnTowerDestroyed);
     }
 
     bool IsAnySideTowerDestroyed()
@@ -42,6 +40,32 @@ public class TowerGroupManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    void OnTowerDestroyed(TowerDestroyedEvent gameEvent)
+    {
+        if (mainUnlocked || mainTower == null || gameEvent.IsMainTower)
+            return;
+
+        if (gameEvent.Team != mainTower.Team)
+            return;
+
+        for (int i = 0; i < sideTowers.Count; i++)
+        {
+            if (sideTowers[i] != null && sideTowers[i] == gameEvent.Tower)
+            {
+                mainUnlocked = true;
+                mainTower.SetCanAttack(true);
+                return;
+            }
+        }
+
+        // Fallback in case references changed dynamically.
+        if (IsAnySideTowerDestroyed())
+        {
+            mainUnlocked = true;
+            mainTower.SetCanAttack(true);
+        }
     }
 
     void AutoAssignFromChildrenIfNeeded()

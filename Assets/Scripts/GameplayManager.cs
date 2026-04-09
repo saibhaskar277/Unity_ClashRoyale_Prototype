@@ -2,32 +2,32 @@ using UnityEngine;
 
 public class GameplayManager : MonoBehaviour
 {
-    [Header("Main Towers")]
-    [SerializeField] Tower playerMainTower;
-    [SerializeField] Tower enemyMainTower;
-
-    [Header("UI")]
-    [SerializeField] GameOverUI gameOverUI;
-    [SerializeField] string winTitle = "You Win";
-    [SerializeField] string loseTitle = "You Lose";
-
     [Header("Flow")]
     [SerializeField] bool pauseOnGameOver = true;
 
     bool isGameOver;
+    Tower[] cachedTowers;
+
+    void Awake()
+    {
+        CacheTowers();
+    }
+
+    void OnEnable()
+    {
+        EventManager.AddListner<TowerDestroyedEvent>(OnTowerDestroyed);
+    }
+
+    void OnDisable()
+    {
+        EventManager.RemoveListner<TowerDestroyedEvent>(OnTowerDestroyed);
+    }
 
     void Start()
     {
         isGameOver = false;
         if (pauseOnGameOver)
-        {
             Time.timeScale = 1f;
-        }
-
-        if (gameOverUI != null)
-        {
-            gameOverUI.Hide();
-        }
     }
 
     void Update()
@@ -35,36 +35,58 @@ public class GameplayManager : MonoBehaviour
         if (isGameOver)
             return;
 
-        if (playerMainTower == null || enemyMainTower == null)
-            return;
-
-        if (!playerMainTower.gameObject.activeInHierarchy)
-        {
-            EndGame(false);
-            return;
-        }
-
-        if (!enemyMainTower.gameObject.activeInHierarchy)
-        {
-            EndGame(true);
-        }
+        // Safety polling to cover cases where an object gets disabled without death flow.
+        ValidateMainTowersState();
     }
 
-    public void EndGame(bool playerWon)
+    public void EndGame(bool playerWon, string reason)
     {
         if (isGameOver)
             return;
 
         isGameOver = true;
 
-        if (gameOverUI != null)
+        EventManager.RaiseEvent(new GameEndedEvent
         {
-            gameOverUI.Show(playerWon ? winTitle : loseTitle);
-        }
+            PlayerWon = playerWon,
+            Reason = reason
+        });
 
         if (pauseOnGameOver)
-        {
             Time.timeScale = 0f;
+    }
+
+    void OnTowerDestroyed(TowerDestroyedEvent gameEvent)
+    {
+        if (isGameOver || !gameEvent.IsMainTower)
+            return;
+
+        bool playerWon = gameEvent.Team != UnitTeam.PlayerTeam;
+        EndGame(playerWon, "Main Tower Destroyed");
+    }
+
+    void ValidateMainTowersState()
+    {
+        if (cachedTowers == null || cachedTowers.Length == 0)
+            CacheTowers();
+
+        for (int i = 0; i < cachedTowers.Length; i++)
+        {
+            Tower tower = cachedTowers[i];
+            if (tower == null || !tower.IsMainTower)
+                continue;
+
+            if (!tower.gameObject.activeInHierarchy)
+            {
+                bool playerWon = tower.Team != UnitTeam.PlayerTeam;
+                EndGame(playerWon, "Main Tower Disabled");
+                return;
+            }
         }
+    }
+
+    void CacheTowers()
+    {
+        cachedTowers = FindObjectsByType<Tower>(FindObjectsSortMode.None);
     }
 }

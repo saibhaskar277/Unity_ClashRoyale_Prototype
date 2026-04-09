@@ -14,9 +14,14 @@ public class Tower : MonoBehaviour
 
     [SerializeField] float attackRange = 8f;
     [SerializeField] TowerData towerData;
+    [SerializeField] UnitTeam towerTeam = UnitTeam.PlayerTeam;
+    [SerializeField] bool isMainTower;
 
     public bool canAttack = true;
     public bool CanAttack => canAttack;
+    public UnitTeam Team => towerTeam;
+    public bool IsMainTower => isMainTower;
+    bool hasRaisedDestroyedEvent;
 
 
     private void Awake()
@@ -26,6 +31,25 @@ public class Tower : MonoBehaviour
         healthManager = GetComponent<HealthManager>();
 
         ApplyData();
+    }
+
+    void OnEnable()
+    {
+        hasRaisedDestroyedEvent = false;
+    }
+
+    void OnDisable()
+    {
+        if (hasRaisedDestroyedEvent || !gameObject.scene.isLoaded)
+            return;
+
+        hasRaisedDestroyedEvent = true;
+        EventManager.RaiseEvent(new TowerDestroyedEvent
+        {
+            Tower = this,
+            Team = Team,
+            IsMainTower = IsMainTower
+        });
     }
 
     void ApplyData()

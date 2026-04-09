@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 3194250012400666008}
   - component: {fileID: 8196298616276183579}
   m_Layer: 5
-  m_Name: Button
+  m_Name: UnitCardView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

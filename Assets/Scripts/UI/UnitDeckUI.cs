@@ -22,6 +22,7 @@ public class UnitDeckUI : MonoBehaviour
     readonly List<UnitCardView> cards = new List<UnitCardView>();
     readonly List<UnitData> allUnits = new List<UnitData>();
     readonly List<UnitData> visibleUnits = new List<UnitData>();
+    readonly Queue<UnitData> drawQueue = new Queue<UnitData>();
     float lastElixirValue;
     bool wasPlacing;
     UnitData lastSelectedUnit;
@@ -29,11 +30,23 @@ public class UnitDeckUI : MonoBehaviour
     void Start()
     {
         BuildCards();
+        if (spawnSystem != null)
+        {
+            spawnSystem.OnUnitSpawned += HandleUnitSpawned;
+        }
         lastElixirValue = GetCurrentElixirFromSystem();
         wasPlacing = GetIsPlacingFromSystem();
         lastSelectedUnit = GetSelectedUnitFromSystem();
         RefreshElixir(lastElixirValue, GetMaxElixirFromSystem());
         RefreshCards();
+    }
+
+    void OnDestroy()
+    {
+        if (spawnSystem != null)
+        {
+            spawnSystem.OnUnitSpawned -= HandleUnitSpawned;
+        }
     }
 
     void Update()
@@ -49,13 +62,6 @@ public class UnitDeckUI : MonoBehaviour
         if (!Mathf.Approximately(currentElixir, lastElixirValue))
         {
             RefreshElixir(currentElixir, maxElixir);
-        }
-
-        bool endedPlacement = wasPlacing && !isPlacing;
-        bool elixirSpent = currentElixir < lastElixirValue;
-        if (endedPlacement && elixirSpent && lastSelectedUnit != null)
-        {
-            CycleDeckAfterSpawn(lastSelectedUnit);
         }
 
         if (selectedUnit != lastSelectedUnit || isPlacing != wasPlacing)
@@ -79,6 +85,7 @@ public class UnitDeckUI : MonoBehaviour
         cards.Clear();
         allUnits.Clear();
         visibleUnits.Clear();
+        drawQueue.Clear();
 
         IReadOnlyList<UnitData> units = GetUnitsFromDatabase();
         if (units == null || units.Count == 0)
@@ -108,6 +115,11 @@ public class UnitDeckUI : MonoBehaviour
             card.Initialize(visibleUnits[i], spawnSystem);
             cards.Add(card);
         }
+
+        for (int i = targetVisibleCount; i < allUnits.Count; i++)
+        {
+            drawQueue.Enqueue(allUnits[i]);
+        }
     }
 
     void ShuffleUnits(List<UnitData> units)
@@ -136,35 +148,18 @@ public class UnitDeckUI : MonoBehaviour
     {
         if (spawnedUnit == null)
             return;
-        if (allUnits.Count <= visibleUnits.Count)
+        if (drawQueue.Count == 0)
             return;
 
         int visibleIndex = visibleUnits.FindIndex(x => x != null && x.UnitId == spawnedUnit.UnitId);
         if (visibleIndex < 0)
             return;
 
-        int allIndex = allUnits.FindIndex(x => x != null && x.UnitId == spawnedUnit.UnitId);
-        if (allIndex < 0)
-            return;
-
-        UnitData moved = allUnits[allIndex];
-        allUnits.RemoveAt(allIndex);
-        allUnits.Add(moved);
-
-        UnitData replacement = null;
-        for (int i = visibleUnits.Count; i < allUnits.Count; i++)
-        {
-            UnitData candidate = allUnits[i];
-            if (!visibleUnits.Exists(x => x != null && candidate != null && x.UnitId == candidate.UnitId))
-            {
-                replacement = candidate;
-                break;
-            }
-        }
-
+        UnitData replacement = drawQueue.Dequeue();
         if (replacement == null)
             return;
 
+        drawQueue.Enqueue(spawnedUnit);
         visibleUnits[visibleIndex] = replacement;
         cards[visibleIndex].Initialize(replacement, spawnSystem);
         RefreshCards();
@@ -210,5 +205,10 @@ public class UnitDeckUI : MonoBehaviour
     UnitData GetSelectedUnitFromSystem()
     {
         return spawnSystem.SelectedUnitData;
+    }
+
+    void HandleUnitSpawned(UnitData spawnedUnit)
+    {
+        CycleDeckAfterSpawn(spawnedUnit);
     }
 }

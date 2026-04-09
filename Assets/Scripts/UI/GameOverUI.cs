@@ -5,10 +5,22 @@ public class GameOverUI : MonoBehaviour
 {
     [SerializeField] GameObject rootPanel;
     [SerializeField] TextMeshProUGUI titleText;
+    [SerializeField] string winTitle = "You Win";
+    [SerializeField] string loseTitle = "You Lose";
 
     void Awake()
     {
         Hide();
+    }
+
+    void OnEnable()
+    {
+        EventManager.AddListner<GameEndedEvent>(OnGameEnded);
+    }
+
+    void OnDisable()
+    {
+        EventManager.RemoveListner<GameEndedEvent>(OnGameEnded);
     }
 
     public void Show(string title)
@@ -43,5 +55,10 @@ public class GameOverUI : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    void OnGameEnded(GameEndedEvent gameEvent)
+    {
+        Show(gameEvent.PlayerWon ? winTitle : loseTitle);
     }
 }

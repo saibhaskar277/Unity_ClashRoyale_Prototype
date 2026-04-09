@@ -16,8 +16,7 @@ public class MoveState : UnitState
             return;
         }
 
-        controller.Agent.isStopped = false;
-        controller.Agent.SetDestination(controller.CurrentTarget.Target.position);
+        controller.BeginMovementTo(controller.CurrentTarget.Target.position);
     }
 
     public override void Tick()
@@ -28,6 +27,8 @@ public class MoveState : UnitState
             controller.ChangeState(controller.IdleState);
             return;
         }
+
+        controller.FaceTowards(controller.CurrentTarget.Target.position);
         checkTimer.Tick();
         if (controller.IsTargetingTower && checkTimer.IsFinished)
         {
@@ -35,7 +36,7 @@ public class MoveState : UnitState
             if (target != null)
             {
                 controller.CurrentTarget = target;
-                controller.Agent.SetDestination(controller.CurrentTarget.Target.position);
+                controller.BeginMovementTo(controller.CurrentTarget.Target.position);
                 controller.IsTargetingTower = false;
             }
             checkTimer.Reset();
@@ -43,7 +44,7 @@ public class MoveState : UnitState
 
 
 
-        float dist = Vector3.Distance(controller.transform.position, controller.CurrentTarget.Target.position);
+        float dist = controller.GetCombatDistance(controller.CurrentTarget.Target.position);
 
         // Enter attack
         if (dist <= controller.AttackRange)
@@ -51,6 +52,8 @@ public class MoveState : UnitState
             controller.ChangeState(controller.AttackState);
             return;
         }
+
+        controller.TickMovementTowards(controller.CurrentTarget.Target.position);
 
         // Retarget while moving
         if (!controller.AttackSystem.CanAttack())
@@ -63,7 +66,7 @@ public class MoveState : UnitState
             controller.CurrentTarget = newTarget;
             if (controller.CurrentTarget.Target != null)
             {
-                controller.Agent.SetDestination(controller.CurrentTarget.Target.position);
+                controller.BeginMovementTo(controller.CurrentTarget.Target.position);
             }
         }
 

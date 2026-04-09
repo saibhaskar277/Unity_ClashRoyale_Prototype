@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System;
+using UnityEngine.EventSystems;
 
 public class UnitSpawnSystem : MonoBehaviour
 {
@@ -18,11 +19,13 @@ public class UnitSpawnSystem : MonoBehaviour
     GameObject previewInstance;
     bool isPlacing;
     float currentElixir;
+    float elixirRegenMultiplier = 1f;
 
     public float CurrentElixir => currentElixir;
     public float MaxElixir => maxElixir;
     public UnitData SelectedUnitData => selectedUnitData;
     public bool IsPlacing => isPlacing;
+    public float CurrentElixirRegenPerSecond => elixirRegenPerSecond * elixirRegenMultiplier;
 
     public event Action<float, float> OnElixirChanged;
     public event Action<UnitData> OnSelectedUnitChanged;
@@ -102,8 +105,13 @@ public class UnitSpawnSystem : MonoBehaviour
         if (currentElixir >= maxElixir)
             return;
 
-        currentElixir = Mathf.Min(maxElixir, currentElixir + (elixirRegenPerSecond * Time.deltaTime));
+        currentElixir = Mathf.Min(maxElixir, currentElixir + (CurrentElixirRegenPerSecond * Time.deltaTime));
         RaiseElixirChanged();
+    }
+
+    public void SetElixirRegenMultiplier(float multiplier)
+    {
+        elixirRegenMultiplier = Mathf.Max(0f, multiplier);
     }
 
     void UpdatePreview()
@@ -117,7 +125,13 @@ public class UnitSpawnSystem : MonoBehaviour
             return;
 
         Vector3 point = hit.point;
-        bool isValid = TryGetNavMeshPosition(point, out Vector3 navPosition);
+        bool requiresNavMesh = RequiresNavMeshPlacement(selectedUnitData);
+        Vector3 navPosition = point;
+        bool isValid = !requiresNavMesh || TryGetNavMeshPosition(point, out navPosition);
+        if (!requiresNavMesh)
+        {
+            navPosition = point;
+        }
 
         if (previewInstance != null)
         {
@@ -132,18 +146,29 @@ public class UnitSpawnSystem : MonoBehaviour
             return;
         if (!CanSpawn(selectedUnitData))
             return;
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (!Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
             return;
 
-        if (!TryGetNavMeshPosition(hit.point, out Vector3 spawnPosition))
-            return;
+        Vector3 spawnPosition = hit.point;
+        if (RequiresNavMeshPlacement(selectedUnitData))
+        {
+            if (!TryGetNavMeshPosition(hit.point, out spawnPosition))
+                return;
+        }
 
         UnitPoolManager.Instance.Spawn(selectedUnitData, spawnPosition, Quaternion.identity, spawnTeam);
 
         SpendElixir(selectedUnitData.ElixirCost);
         OnUnitSpawned?.Invoke(selectedUnitData);
+        EventManager.RaiseEvent(new UnitSpawnedEvent
+        {
+            UnitData = selectedUnitData,
+            Team = spawnTeam
+        });
         CancelPlacement();
     }
 
@@ -161,6 +186,14 @@ public class UnitSpawnSystem : MonoBehaviour
         }
 
         return false;
+    }
+
+    bool RequiresNavMeshPlacement(UnitData data)
+    {
+        if (data == null)
+            return true;
+
+        return data.UnitType == UnitCategory.Grounded;
     }
 
     void SetPreviewColor(bool valid)
@@ -184,5 +217,11 @@ public class UnitSpawnSystem : MonoBehaviour
     void RaiseElixirChanged()
     {
         OnElixirChanged?.Invoke(currentElixir, maxElixir);
+        EventManager.RaiseEvent(new ElixirChangedEvent
+        {
+            CurrentElixir = currentElixir,
+            MaxElixir = maxElixir,
+            RegenPerSecond = CurrentElixirRegenPerSecond
+        });
     }
 }
