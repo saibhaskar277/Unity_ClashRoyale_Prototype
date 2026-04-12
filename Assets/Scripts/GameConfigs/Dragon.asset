@@ -19,9 +19,9 @@ MonoBehaviour:
   ElixirCost: 2
   UnitPrefab: {fileID: 2881861473878963678, guid: 6002f1d5de8fc1a409873955ead6d806, type: 3}
   PreviewPrefab: {fileID: 2881861473878963678, guid: 05e790f4986697f46b1d5103d142dcc9, type: 3}
-  MaxHealth: 200
-  Damage: 20
-  AttackRange: 3
-  AttackCooldown: 1
-  MoveSpeed: 1
+  MaxHealth: 1000
+  Damage: 30
+  AttackRange: 4
+  AttackCooldown: 1.4
+  MoveSpeed: 0.8
   DetectionRadius: 5

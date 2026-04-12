@@ -37,6 +37,7 @@ public class HealthManager : MonoBehaviour, IDamageable
     public void Configure(UnitData data)
     {
         maxHealth = data.MaxHealth;
+        category = data.UnitType;
         currentHealth = maxHealth;
         if (healthSlider != null)
         {

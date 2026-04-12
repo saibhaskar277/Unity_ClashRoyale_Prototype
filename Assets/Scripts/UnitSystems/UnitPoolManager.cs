@@ -50,6 +50,7 @@ public class UnitPoolManager : MonoBehaviour
         if (member == null)
         {
             member = unit.AddComponent<UnitPoolMember>();
+            member.GetComponent<UnitConfigMapper>().SetUnitData(data);
         }
 
         member.SetUnitId(key);

@@ -3,28 +3,20 @@ using UnityEngine.AI;
 
 public class UnitConfigMapper : MonoBehaviour
 {
-    [SerializeField] UnitId unitId;
     [SerializeField] UnitConfigDatabase database;
 
     UnitData data;
 
-    private void Awake()
+    [SerializeField] UnitId id;
+
+    public void SetUnitData(UnitData data)
     {
-        if (database == null)
-        {
-            Debug.LogError($"Missing {nameof(UnitConfigDatabase)} on {name}", this);
-            return;
-        }
-
-        data = database.Get(unitId);
-        if (data == null)
-        {
-            Debug.LogError($"No {nameof(UnitData)} found for {unitId} on {name}", this);
-            return;
-        }
-
+        this.data = data;
+        id = data.UnitId;
         ApplyConfig();
+
     }
+
 
     void ApplyConfig()
     {

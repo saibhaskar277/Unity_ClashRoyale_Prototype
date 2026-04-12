@@ -178,11 +178,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitStateController
   DetectionRadius: 30
   AttackRange: 30
+  RotationSpeed: 540
   EnemyMask:
     serializedVersion: 2
     m_Bits: 0
-  useSpawnZAsAirHeight: 1
-  airZHeight: 0
+  useSpawnYAsAirHeight: 1
+  airYHeight: 0
   unitType: 0
 --- !u!114 &-2372292215067283075
 MonoBehaviour:
@@ -251,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41d38079471f9f845b4a4ef62594e9f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitConfigMapper
-  unitId: 9
+  unitId: 0
   database: {fileID: 11400000, guid: 1831939634b583740a3d787b19a23c75, type: 2}
 --- !u!114 &8261251433446864992
 MonoBehaviour:
