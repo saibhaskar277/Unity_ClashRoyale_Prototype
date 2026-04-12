@@ -4,10 +4,11 @@ using UnityEngine.AI;
 public class UnitConfigMapper : MonoBehaviour
 {
     [SerializeField] UnitConfigDatabase database;
+    [SerializeField] UnitLevelDatabase levelDatabase;
 
     UnitData data;
 
-    [SerializeField] UnitId id;
+    UnitId id;
 
     public void SetUnitData(UnitData data)
     {
@@ -38,16 +39,20 @@ public class UnitConfigMapper : MonoBehaviour
 
         // Attack System
         var attack = GetComponent<AttackingSystem>();
-        if (attack != null)
+        var unitLevel = levelDatabase.Get(id);
+        if (unitLevel != null)
         {
-            attack.Configure(data);
-        }
+            if (attack != null)
+            {
+                attack.Configure(unitLevel.GetDamage(data.currentLevel), data.AttackCooldown);
+            }
 
-        // Health
-        var health = GetComponent<HealthManager>();
-        if (health != null)
-        {
-            health.Configure(data);
+            // Health
+            var health = GetComponent<HealthManager>();
+            if (health != null)
+            {
+                health.Configure(unitLevel.GetHealth(data.currentLevel));
+            }
         }
     }
 }

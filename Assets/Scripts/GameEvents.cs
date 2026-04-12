@@ -1,7 +1,11 @@
+
 public class UnitSpawnData
 {
     public UnitTeam currentUnitType;
     public UnitData unitData;
+    public int level;
+    public float damage;
+    public float health;
 }
 
 public struct ElixirChangedEvent : IGameEvent

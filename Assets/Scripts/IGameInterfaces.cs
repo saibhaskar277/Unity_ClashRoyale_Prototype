@@ -34,3 +34,9 @@ public interface IAttack
 
 }
 
+public interface ICardAbility
+{
+    bool CanUse();
+    void Use(UnitStateController owner, IDamageable target);
+}
+

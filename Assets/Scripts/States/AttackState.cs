@@ -32,7 +32,11 @@ public class AttackState : UnitState
         // Attack only (no movement / no retarget)
         if (controller.AttackSystem.CanAttack())
         {
-            if (controller.CurrentTarget.Target != null)
+            if (controller.AbilityManager != null && controller.AbilityManager.HasAbility)
+            {
+                controller.AbilityManager.TryUse(controller, controller.CurrentTarget);
+            }
+            else
             {
                 controller.AttackSystem.Attack(controller.CurrentTarget);
             }

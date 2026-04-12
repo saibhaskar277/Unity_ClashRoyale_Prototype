@@ -6,6 +6,7 @@ public class UnitStateController : MonoBehaviour , IUnit
     public NavMeshAgent Agent { get; private set; }
     public IAttack AttackSystem { get; private set; }
     public ITargetingStrategy TargetingStrategy { get; private set; }
+    public AbilityManager AbilityManager { get; private set; }
     public UnitCategory MovementCategory { get; private set; } = UnitCategory.Grounded;
     public float MoveSpeed { get; private set; } = 3.5f;
 
@@ -45,6 +46,7 @@ public class UnitStateController : MonoBehaviour , IUnit
         Agent = GetComponent<NavMeshAgent>();
         AttackSystem = GetComponent<IAttack>();
         TargetingStrategy = GetComponent<ITargetingStrategy>();
+        AbilityManager = GetComponent<AbilityManager>();
         TargetAttackType = AttackSystem != null ? AttackSystem.AttackType : TargetAttackType.Both;
 
         IdleState = new IdleState(this);
@@ -78,7 +80,7 @@ public class UnitStateController : MonoBehaviour , IUnit
             AttackRange = data.unitData.AttackRange;
             DetectionRadius = data.unitData.DetectionRadius;
             TargetAttackType = data.unitData.AttackType;
-            ApplyRuntimeUnitData(data.unitData);
+            ApplyRuntimeUnitData(data);
         }
 
         ConfigureMovementComponentForUnitType();
@@ -107,27 +109,21 @@ public class UnitStateController : MonoBehaviour , IUnit
 
     }
 
-    void ApplyRuntimeUnitData(UnitData data)
+    void ApplyRuntimeUnitData(UnitSpawnData data)
     {
-        MoveSpeed = data.MoveSpeed;
-        MovementCategory = data.UnitType;
+        MoveSpeed = data.unitData.MoveSpeed;
+        MovementCategory = data.unitData.UnitType;
 
         if (Agent != null)
-        {
-            Agent.speed = data.MoveSpeed;
-        }
+            Agent.speed = data.unitData.MoveSpeed;
 
         var attacking = GetComponent<AttackingSystem>();
         if (attacking != null)
-        {
-            attacking.Configure(data);
-        }
+            attacking.Configure(data.damage,data.unitData.AttackCooldown);
 
         var health = GetComponent<HealthManager>();
         if (health != null)
-        {
-            health.Configure(data);
-        }
+            health.Configure(data.health);
     }
 
     void ConfigureMovementComponentForUnitType()

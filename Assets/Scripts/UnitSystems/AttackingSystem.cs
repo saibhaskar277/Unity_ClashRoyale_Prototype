@@ -47,13 +47,10 @@ public class AttackingSystem : MonoBehaviour, IAttack
         }
     }
 
-    public void Configure(UnitData data)
+    public void Configure(float newDamage, float cooldown)
     {
-        damage = data.Damage;
-        attackCoolDown = data.AttackCooldown;
-        currentUnitId = data.UnitId;
-        ResolveProjectileConfig();
-
+        damage = newDamage;
+        attackCoolDown = cooldown;
         attackTimer = new Timer(attackCoolDown);
     }
 
@@ -65,6 +62,7 @@ public class AttackingSystem : MonoBehaviour, IAttack
         projectilePrefab = null;
         useProjectileAttack = false;
         attackTimer = new Timer(attackCoolDown);
+        ResolveProjectileConfig();
     }
 
     public void Attack(IDamageable target)

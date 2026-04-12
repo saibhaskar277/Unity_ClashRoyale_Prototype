@@ -34,10 +34,9 @@ public class HealthManager : MonoBehaviour, IDamageable
         healthSlider.transform.rotation = Quaternion.Euler(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.eulerAngles.z);
     }
 
-    public void Configure(UnitData data)
+    public void Configure(float healthValue)
     {
-        maxHealth = data.MaxHealth;
-        category = data.UnitType;
+        maxHealth = healthValue;
         currentHealth = maxHealth;
         if (healthSlider != null)
         {

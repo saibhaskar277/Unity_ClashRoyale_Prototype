@@ -21,6 +21,8 @@ public class UnitSpawnSystem : MonoBehaviour
     float currentElixir;
     float elixirRegenMultiplier = 1f;
 
+    [SerializeField] private PlayerCardLevelDatabase playerLevels;
+
     public float CurrentElixir => currentElixir;
     public float MaxElixir => maxElixir;
     public UnitData SelectedUnitData => selectedUnitData;
@@ -160,7 +162,18 @@ public class UnitSpawnSystem : MonoBehaviour
                 return;
         }
 
-        UnitPoolManager.Instance.Spawn(selectedUnitData, spawnPosition, Quaternion.identity, spawnTeam);
+        int level = playerLevels.GetLevel(selectedUnitData.UnitId);
+
+        UnitSpawnData spawnData = new UnitSpawnData
+        {
+            currentUnitType = spawnTeam,
+            unitData = selectedUnitData,
+            level = level
+        };
+
+        UnitPoolManager.Instance.Spawn(selectedUnitData, spawnPosition, Quaternion.identity, spawnData.currentUnitType);
+           
+
 
         SpendElixir(selectedUnitData.ElixirCost);
         OnUnitSpawned?.Invoke(selectedUnitData);
