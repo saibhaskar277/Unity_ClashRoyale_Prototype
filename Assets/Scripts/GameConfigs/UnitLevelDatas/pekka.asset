@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13c52864ad4f9a64b888df53dfa64a85, type: 3}
-  m_Name: Archer
+  m_Name: pekka
   m_EditorClassIdentifier: Assembly-CSharp::UnitLevelStats
-  unitId: 2
+  unitId: 7
   levels:
   - Level: 1
-    Health: 200
-    Damage: 20
+    Health: 0
+    Damage: 0
   - Level: 2
-    Health: 300
-    Damage: 25
+    Health: 0
+    Damage: 0

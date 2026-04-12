@@ -14,3 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitLevelDatabase
   units:
   - {fileID: 11400000, guid: b560aac9255291547ae0d4538eefbba4, type: 2}
+  - {fileID: 11400000, guid: ce9a92cebcff63f48ae293174c3ae3ab, type: 2}
+  - {fileID: 11400000, guid: d160834baca46274b96893eb94f62fb7, type: 2}
+  - {fileID: 11400000, guid: 450d60dd5f6cca04ea9574e25d204697, type: 2}
+  - {fileID: 11400000, guid: 297f82f86f2677740a3fb47f2d96359f, type: 2}
+  - {fileID: 11400000, guid: 8bdf3dd481f66464b8d218d43baf3544, type: 2}
+  - {fileID: 11400000, guid: 9223a41802a52784aa7445f64a6ec8a0, type: 2}
+  - {fileID: 11400000, guid: 32eaa47e0f0e632459ad0d4d1a5f6074, type: 2}
