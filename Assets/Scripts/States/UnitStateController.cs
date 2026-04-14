@@ -48,7 +48,7 @@ public class UnitStateController : MonoBehaviour , IUnit
         TargetingStrategy = GetComponent<ITargetingStrategy>();
         AbilityManager = GetComponent<AbilityManager>();
         TargetAttackType = AttackSystem != null ? AttackSystem.AttackType : TargetAttackType.Both;
-
+        
         IdleState = new IdleState(this);
         MoveState = new MoveState(this);
         AttackState = new AttackState(this);
