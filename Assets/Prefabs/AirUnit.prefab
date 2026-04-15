@@ -252,8 +252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41d38079471f9f845b4a4ef62594e9f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitConfigMapper
-  unitId: 0
   database: {fileID: 11400000, guid: 1831939634b583740a3d787b19a23c75, type: 2}
+  levelDatabase: {fileID: 11400000, guid: a7a9f2309606a7046b7fda38e2e1c44e, type: 2}
 --- !u!114 &8261251433446864992
 MonoBehaviour:
   m_ObjectHideFlags: 0

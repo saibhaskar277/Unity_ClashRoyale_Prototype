@@ -15,12 +15,6 @@ public struct ElixirChangedEvent : IGameEvent
     public float RegenPerSecond;
 }
 
-public struct UnitSpawnedEvent : IGameEvent
-{
-    public UnitData UnitData;
-    public UnitTeam Team;
-}
-
 public struct MatchTimerUpdatedEvent : IGameEvent
 {
     public float RemainingSeconds;

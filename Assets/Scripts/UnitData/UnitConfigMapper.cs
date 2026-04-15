@@ -3,23 +3,48 @@ using UnityEngine.AI;
 
 public class UnitConfigMapper : MonoBehaviour
 {
-    [SerializeField] UnitConfigDatabase database;
     [SerializeField] UnitLevelDatabase levelDatabase;
 
     UnitData data;
 
     UnitId id;
 
+
+    int currentLevel;
+
+    float damage, health;
+
     public void SetUnitData(UnitData data)
     {
         this.data = data;
         id = data.UnitId;
-        ApplyConfig();
-
+        currentLevel = 1;//PlayerSessionData.instance.GetUnitLevel(id);
+        ApplyUnitData();
     }
 
 
-    void ApplyConfig()
+    public void ResetUnitData()
+    {
+        // Attack System
+        var attack = GetComponent<AttackingSystem>();
+        var unitLevel = levelDatabase.Get(id);
+        if (unitLevel != null)
+        {
+            if (attack != null)
+            {
+                attack.Configure(unitLevel.GetDamage(currentLevel), data.AttackCooldown);
+            }
+
+            // Health
+            var health = GetComponent<HealthManager>();
+            if (health != null)
+            {
+                health.Configure(unitLevel.GetHealth(currentLevel));
+            }
+        }
+    }
+
+    void ApplyUnitData()
     {
         // Movement
         var agent = GetComponent<NavMeshAgent>();
@@ -44,14 +69,14 @@ public class UnitConfigMapper : MonoBehaviour
         {
             if (attack != null)
             {
-                attack.Configure(unitLevel.GetDamage(data.currentLevel), data.AttackCooldown);
+                attack.Configure(unitLevel.GetDamage(currentLevel), data.AttackCooldown);
             }
 
             // Health
             var health = GetComponent<HealthManager>();
             if (health != null)
             {
-                health.Configure(unitLevel.GetHealth(data.currentLevel));
+                health.Configure(unitLevel.GetHealth(currentLevel));
             }
         }
     }

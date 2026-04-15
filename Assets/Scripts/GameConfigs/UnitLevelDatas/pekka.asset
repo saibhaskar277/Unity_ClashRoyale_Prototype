@@ -15,8 +15,8 @@ MonoBehaviour:
   unitId: 7
   levels:
   - Level: 1
-    Health: 0
-    Damage: 0
+    Health: 2000
+    Damage: 200
   - Level: 2
-    Health: 0
-    Damage: 0
+    Health: 2500
+    Damage: 280

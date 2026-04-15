@@ -67,7 +67,7 @@ public class Tower : MonoBehaviour
 
         if (healthManager != null)
         {
-            healthManager.ConfigureFromTowerData(towerData.MaxHealth);
+            healthManager.Configure(towerData.MaxHealth);
         }
     }
 

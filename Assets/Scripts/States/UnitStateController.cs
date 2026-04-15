@@ -39,7 +39,6 @@ public class UnitStateController : MonoBehaviour , IUnit
 
 
     [SerializeField] UnitTeam unitType;
-    bool hasInitializedFromSpawnData;
 
     private void Awake()
     {
@@ -54,33 +53,19 @@ public class UnitStateController : MonoBehaviour , IUnit
         AttackState = new AttackState(this);
     }
 
-    private void Start()
-    {
-        // Fallback for pre-placed scene units that are not spawned through a system.
-        if (!hasInitializedFromSpawnData)
-        {
-            SetUnitData(new UnitSpawnData
-            {
-                currentUnitType = unitType,
-                unitData = null
-            });
-        }
-    }
 
-    public void SetUnitData(UnitSpawnData data)
+    public void SetUnitData(UnitData data, UnitTeam unitTeam)
     {
         if (data == null)
             return;
 
-        hasInitializedFromSpawnData = true;
-        unitType = data.currentUnitType;
+        unitType = unitTeam;
 
-        if (data.unitData != null)
+        if (data != null)
         {
-            AttackRange = data.unitData.AttackRange;
-            DetectionRadius = data.unitData.DetectionRadius;
-            TargetAttackType = data.unitData.AttackType;
-            ApplyRuntimeUnitData(data);
+            AttackRange = data.AttackRange;
+            DetectionRadius = data.DetectionRadius;
+            TargetAttackType = data.AttackType;
         }
 
         ConfigureMovementComponentForUnitType();
@@ -107,23 +92,6 @@ public class UnitStateController : MonoBehaviour , IUnit
 
         ChangeState(IdleState);
 
-    }
-
-    void ApplyRuntimeUnitData(UnitSpawnData data)
-    {
-        MoveSpeed = data.unitData.MoveSpeed;
-        MovementCategory = data.unitData.UnitType;
-
-        if (Agent != null)
-            Agent.speed = data.unitData.MoveSpeed;
-
-        var attacking = GetComponent<AttackingSystem>();
-        if (attacking != null)
-            attacking.Configure(data.damage,data.unitData.AttackCooldown);
-
-        var health = GetComponent<HealthManager>();
-        if (health != null)
-            health.Configure(data.health);
     }
 
     void ConfigureMovementComponentForUnitType()

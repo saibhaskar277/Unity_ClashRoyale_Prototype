@@ -7,7 +7,6 @@ public class UnitData : ScriptableObject
     public GameObject UnitPrefab;
     public GameObject PreviewPrefab;
     public Sprite CardSprite;
-    public int currentLevel = 1;    
     [Header("Static Gameplay")]
     public float MoveSpeed;
     public float AttackRange;

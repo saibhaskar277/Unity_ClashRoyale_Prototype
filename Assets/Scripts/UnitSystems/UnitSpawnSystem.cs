@@ -164,24 +164,14 @@ public class UnitSpawnSystem : MonoBehaviour
 
         int level = playerLevels.GetLevel(selectedUnitData.UnitId);
 
-        UnitSpawnData spawnData = new UnitSpawnData
-        {
-            currentUnitType = spawnTeam,
-            unitData = selectedUnitData,
-            level = level
-        };
 
-        UnitPoolManager.Instance.Spawn(selectedUnitData, spawnPosition, Quaternion.identity, spawnData.currentUnitType);
+
+        UnitPoolManager.Instance.Spawn(selectedUnitData, spawnPosition, Quaternion.identity, spawnTeam);
            
 
 
         SpendElixir(selectedUnitData.ElixirCost);
         OnUnitSpawned?.Invoke(selectedUnitData);
-        EventManager.RaiseEvent(new UnitSpawnedEvent
-        {
-            UnitData = selectedUnitData,
-            Team = spawnTeam
-        });
         CancelPlacement();
     }
 

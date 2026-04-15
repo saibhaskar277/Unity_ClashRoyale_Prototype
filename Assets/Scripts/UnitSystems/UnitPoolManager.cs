@@ -52,6 +52,10 @@ public class UnitPoolManager : MonoBehaviour
             member = unit.AddComponent<UnitPoolMember>();
             member.GetComponent<UnitConfigMapper>().SetUnitData(data);
         }
+        else
+        {
+            member.GetComponent<UnitConfigMapper>().ResetUnitData();
+        }
 
         member.SetUnitId(key);
         member.MarkSpawnPosition(position);
@@ -62,11 +66,7 @@ public class UnitPoolManager : MonoBehaviour
         UnitStateController stateController = unit.GetComponent<UnitStateController>();
         if (stateController != null)
         {
-            stateController.SetUnitData(new UnitSpawnData
-            {
-                currentUnitType = team,
-                unitData = data
-            });
+            stateController.SetUnitData(data, team);    
         }
 
         return unit;

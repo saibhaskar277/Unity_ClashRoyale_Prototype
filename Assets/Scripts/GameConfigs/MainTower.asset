@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MainTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerData
   MaxHealth: 2000
-  Damage: 200
-  AttackRange: 8
+  Damage: 30
+  AttackRange: 4.5
   AttackCooldown: 1
-  DetectionRadius: 4
+  DetectionRadius: 5
   ProjectilePrefab: {fileID: 0}

@@ -2289,6 +2289,7 @@ MonoBehaviour:
   maxElixir: 10
   startElixir: 5
   elixirRegenPerSecond: 1
+  playerLevels: {fileID: 11400000, guid: 2eab0eed8caa67d43848cd1c6c953769, type: 2}
 --- !u!114 &1445413245
 MonoBehaviour:
   m_ObjectHideFlags: 0

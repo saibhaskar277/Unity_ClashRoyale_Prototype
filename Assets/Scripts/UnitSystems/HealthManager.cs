@@ -44,15 +44,6 @@ public class HealthManager : MonoBehaviour, IDamageable
         }
     }
 
-    public void ConfigureFromTowerData(float newMaxHealth)
-    {
-        maxHealth = newMaxHealth;
-        currentHealth = maxHealth;
-        if (healthSlider != null)
-        {
-            healthSlider.value = 1f;
-        }
-    }
 
     public void TakeDamage(float damage)
     {
